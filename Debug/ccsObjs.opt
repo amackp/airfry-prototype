@@ -1,0 +1,1 @@
+"./main.obj" "./drivers/src/MAX7219.obj" "./drivers/src/cap_buttons.obj" "./drivers/src/neopixel.obj" "./utility/clock.obj" "./utility/delay.obj" "../lnk_msp430g2433.cmd" -llibc.a 
