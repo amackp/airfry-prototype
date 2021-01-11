@@ -48,9 +48,10 @@ typedef enum{
 }button_function_t;
 
 typedef enum{
-    BUTTON_STATE_OFF,
+    BUTTON_STATE_OFF = 0,
     BUTTON_STATE_ON,
-    BUTTON_STATE_PRESSED
+    BUTTON_STATE_PRESSED,
+    BUTTON_STATE_NULL
 }button_state_t;
 
 typedef enum{
@@ -66,10 +67,16 @@ typedef struct{
     button_type_t type;
     button_state_t state;
     uint8_t assc_leds[2];   //indexes of leds accociated with button
+    uint16_t debounce;
 
 }button_map_t;
 
 
-
+void button_io_init();
+button_function_t button_check();
+void change_button_state(button_function_t, button_state_t);
+button_state_t get_button_state(button_function_t);
+void update_button_leds();
+void button_decrement_debounce();
 
 #endif /* DRIVERS_INC_CAP_BUTTONS_H_ */

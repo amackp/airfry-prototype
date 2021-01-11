@@ -53,7 +53,7 @@ static void ShowChannel(uint8_t value);
 void        neopixel_Init();
 void        neopixel_Clear();
 void        neopixel_Show();
-uint8_t     neopixel_SetColor(uint8_t index, COLOR color);
-uint8_t     neopixel_SetColorAndShow(uint8_t index, COLOR color);
+uint8_t     neopixel_SetColor(uint8_t index, color_t color);
+uint8_t     neopixel_SetColorAndShow(uint8_t index, color_t color);
 
 #endif /* DRIVERS_INC_NEOPIXEL_H_ */

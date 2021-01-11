@@ -49,74 +49,135 @@ typedef struct{
 
 ui_struct_t ui;
 
+void buzzer_beep(uint16_t time){
+    P1DIR |= BIT0;
+    P1OUT |= BIT0;
+    delay_ms(time);
+    P1OUT &= ~BIT0;
+    //P1DIR &= ~BIT0;
+}
+
 void main(void)
 {
     WDTCTL = WDTPW + WDTHOLD;   // Stop WDT
 
-
     clock_init();
     neopixel_Init();
-
+    button_io_init();
     display_init();
     display_off(&display);
     ui.last_state = STATE_NULL;
     ui.current_state = STATE_OFF;
 
+    P1DIR |= BIT1;
+    P1OUT &= ~BIT1;
+
+    P3DIR |= BIT7;
+    P3OUT |= BIT7;
+    P3REN &= ~BIT7;
+
+    P2IFG = 0;
     __bis_SR_register(GIE); //enable global interrupts
+    volatile int i = 0;
+
+    for(uint8_t j = 0; j < 8; j++){
+        display_set_digit(&display, j, DIG_8 | DOTS);
+    }
+    display_show_all_digits(&display);
+    update_button_leds();
+    neopixel_Show();
+
+//    while(1){
+//
+//        if(i == 0){
+//            neopixel_Clear();
+//            neopixel_Show();
+//        }
+//        //buzzer_beep(1000);
+//        P3OUT ^= BIT7;
+//        display_off(&display);
+//        display_show_all_digits(&display);
+//
+//        neopixel_SetColorAndShow(i, COLOR_RGB(50,50,50));
+//        i = (i+1) % NEOPIXEL_LED_COUNT;
+//
+//        delay_ms(1000);
+//        for(uint8_t j = 0; j < 8; j++){
+//            display_set_digit(&display, j, DIG_8);
+//        }
+//        display_show_all_digits(&display);
+//        P3OUT ^= BIT7;
+//        delay_ms(1000);
+//    }
 
 	while(1)
 	{
 	    button_function_t new_function = buttons_check();
-	    switch(new_function){
-	    case BUTTON_STOP_CANCEL:
-	        break;
-	    case BUTTON_START:
-	        break;
-	    case BUTTON_POWER:
-	        break;
-	    case BUTTON_TIME_UP:
-	        break;
-	    case BUTTON_TIME_DOWN:
-	        break;
-	    case BUTTON_TEMP_UP:
-	        break;
-	    case BUTTON_TEMP_DOWN:
-	        break;
-	    case BUTTON_SMOKE_EXT:
-	        break;
-	    case BUTTON_TIME_TEMP_TOGGLE:
-	        break;
-	    case BUTTON_TURN_REM:
-	        break;
-	    case BUTTON_AIRFRY:
-	        break;
-	    case BUTTON_BAKE:
-	        break;
-	    case BUTTON_ROAST:
-	        break;
-	    case BUTTON_DEHYDRATE:
-	        break;
-	    case BUTTON_PREHEAT:
-	        break;
-	    case BUTTON_GRILL:
-	        break;
-	    default:
-	        break;
-	    }
+	    if(new_function != BUTTON_NULL){
+	        change_button_state(new_function,(get_button_state(new_function)+1)%BUTTON_STATE_NULL);
+	        update_button_leds();
+	        neopixel_Show();
+	        buzzer_beep(50);
 
-	    switch(ui.current_state){
-	    case STATE_OFF:
-	        if(ui.last_state != STATE_OFF){
-	            display_off(&display);
-	            neopixel_Clear();
-	            neopixel_Show();
-	        }
-	        break;
-	    case STATE_IDLE:
-	        if(ui.last_state != STATE_IDLE){
 
-	        }
+	        display_off(&display);
+	        display_set_digit(&display, i, DIG_8 | DOTS);
+	        i = (i+1)%8;
+	        display_show_all_digits(&display);
+
 	    }
+	    button_decrement_debounce();
+
+//	    switch(new_function){
+//	    case BUTTON_STOP_CANCEL:
+//	        break;
+//	    case BUTTON_START:
+//	        break;
+//	    case BUTTON_POWER:
+//	        break;
+//	    case BUTTON_TIME_UP:
+//	        break;
+//	    case BUTTON_TIME_DOWN:
+//	        break;
+//	    case BUTTON_TEMP_UP:
+//	        break;
+//	    case BUTTON_TEMP_DOWN:
+//	        break;
+//	    case BUTTON_SMOKE_EXT:
+//	        break;
+//	    case BUTTON_TIME_TEMP_TOGGLE:
+//	        break;
+//	    case BUTTON_TURN_REM:
+//	        break;
+//	    case BUTTON_AIRFRY:
+//	        break;
+//	    case BUTTON_BAKE:
+//	        break;
+//	    case BUTTON_ROAST:
+//	        break;
+//	    case BUTTON_DEHYDRATE:
+//	        break;
+//	    case BUTTON_PREHEAT:
+//	        break;
+//	    case BUTTON_GRILL:
+//	        break;
+//	    default:
+//	        break;
+//	    }
+
+//	    switch(ui.current_state){
+//	    case STATE_OFF:
+//	        if(ui.last_state != STATE_OFF){
+//	            display_off(&display);
+//	            neopixel_Clear();
+//	            neopixel_Show();
+//	        }
+//	        break;
+//	    case STATE_IDLE:
+//	        if(ui.last_state != STATE_IDLE){
+//
+//	        }
+//	    }
 
 	}
 }

@@ -7,7 +7,7 @@
 
 #include "../inc/neopixel.h"
 
-COLOR neopixel_leds[NEOPIXEL_LED_COUNT];
+color_t neopixel_leds[NEOPIXEL_LED_COUNT];
 
 // Send color intensity value for a single channel
 static void ShowChannel(uint8_t value) {
@@ -34,12 +34,13 @@ void neopixel_Clear() {
     uint8_t i;
 
     for (i = 0; i < NEOPIXEL_LED_COUNT; i++) {
-        neopixel_leds[i] = NEOPIXEL_OFF;
+        neopixel_leds[i] = COLOR_BLACK;
     }
 }
 
 
 void neopixel_Show() {
+
     uint8_t i;
     NEOPIXEL_SEND_RESET;
 
@@ -53,7 +54,7 @@ void neopixel_Show() {
 }
 
 
-uint8_t neopixel_SetColor(uint8_t index, COLOR color) {
+uint8_t neopixel_SetColor(uint8_t index, color_t color) {
 
         if (index < NEOPIXEL_LED_COUNT) {
             neopixel_leds[index] = color;
@@ -64,7 +65,7 @@ uint8_t neopixel_SetColor(uint8_t index, COLOR color) {
         return 0;
 }
 
-uint8_t neopixel_SetColorAndShow(uint8_t index, COLOR color) {
+uint8_t neopixel_SetColorAndShow(uint8_t index, color_t color) {
 
     if (index < NEOPIXEL_LED_COUNT) {
         neopixel_leds[index] = color;

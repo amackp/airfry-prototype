@@ -38,7 +38,7 @@ void clock_init() {
         break;
 
     case CLOCK_16MHZ:
-        CLOCK_CHECK(CALBC1_16MHZ);
+        //CLOCK_CHECK(CALBC1_16MHZ);
         BCSCTL1 &= BIT1; //ensure bit 1 is cleared
         BCSCTL1 |= 0x0d; //set RSELx to 13
         __delay_cycles(4);  //wait for new clock to settle
@@ -87,9 +87,9 @@ void rtc_timer_ms( uint16_t ms){
     while (g_uptime < end_time_s &&
             rtc_miliseconds < end_time_ms );
 }
-
+extern void button_decrement_debounce();
 extern void update_press_from_interrupt(uint8_t port, uint8_t int_mask);
-
+uint8_t p3in_last = 0xff;
 // Timer A0 interrupt service routine
 #pragma vector=TIMER0_A0_VECTOR
 __interrupt void Timer_A (void)
@@ -98,9 +98,11 @@ __interrupt void Timer_A (void)
     rtc_tick();
 
     //check inputs on port3, bc we have no interrupt vector there
-    if(P3IN != 0xff){
+    if(P3IN != p3in_last){
+        p3in_last = P3IN;
         update_press_from_interrupt(3, ~P3IN);
     }
 
+    //button_decrement_debounce();
     //LPM4_EXIT;
 }

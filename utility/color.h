@@ -9,35 +9,35 @@
 #define COLOR_H_
 
 
+#include <stdint.h>
+
 typedef struct {
     uint8_t red;
     uint8_t green;
     uint8_t blue;
-} COLOR;
+} color_t;
+
+#define COLOR_RGB(r,g,b)   ((color_t){g, r, b })      // adjust component order
+#define COLOR_HEX(value)   ((color_t){ ((value & 0x00FF00) >> 8), ((value & 0xFF0000) >> 16), (value & 0x0000FF) })
 
 
-#define BLACK       ((COLOR){0x00,0x00,0x00})
-#define COLOR_OFF   BLACK
-
-#define RED         ((COLOR){0xFF,0x00,0x00})
-#define RED_50      ((COLOR){0x7F,0x00,0x00})
-#define RED_10      ((COLOR){0x19,0x00,0x00})
-
-#define GREEN       ((COLOR){0x00,0xFF,0x00})
-#define GREEN_50    ((COLOR){0x00,0x7F,0x00})
-#define GREEN_10    ((COLOR){0x00,0x19,0x00})
-
-#define BLUE        ((COLOR){0x00,0x00,0xFF})
-#define BLUE_50     ((COLOR){0x00,0x00,0x7F})
-#define BLUE_10     ((COLOR){0x00,0x00,0x19})
-#define BLUE_01     ((COLOR){0x00,0x00,0x03})
+#define COLOR_RED           COLOR_HEX(0xFF0000)
+#define COLOR_GREEN         COLOR_HEX(0x00FF00)
+#define COLOR_BLUE          COLOR_HEX(0x0000FF)
+#define COLOR_PURPLE        COLOR_HEX(0xFF00FF)
+#define COLOR_ORANGE        COLOR_HEX(0xFF3000)
+#define COLOR_YELLOW        COLOR_HEX(0xFFB000)
+#define COLOR_CYAN          COLOR_HEX(0x42F4BF)
+#define COLOR_CYAN_TRUE     COLOR_HEX(0x00FFFF)
+#define COLOR_PINK          COLOR_HEX(0x99140C)                                                                                           `
 
 
-#define PURPLE      ((COLOR){0xFF,0x00,0xFF})
-#define ORANGE      ((COLOR){0xFF,0x7F,0x00})
+#define COLOR_PASTEL_RED        COLOR_HEX(0xFF1010)
+#define COLOR_PASTEL_GREEN      COLOR_HEX(0x00FF10)
+#define COLOR_PASTEL_BLUE       COLOR_HEX(0x1000FF)
 
-#define WHITE       ((COLOR){0xFF,0xFF,0xFF})
-
+#define COLOR_WHITE         COLOR_HEX(0xFFFFFF)
+#define COLOR_BLACK         COLOR_HEX(0x000000)
 
 
 #endif /* COLOR_H_ */

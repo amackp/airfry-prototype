@@ -60,7 +60,9 @@ typedef enum{
     CHAR_U = 0b00011100,
     CHAR_O_LOWER = 0b00011110,
 
-    CHAR_DASH = 0b00000001
+    CHAR_DASH = 0b00000001,
+
+    DOTS = 0b10000000
 }display_character_t;
 
 
@@ -107,4 +109,6 @@ void display_write_config(display_config_t config);
 void display_show_all_digits(display_t * disp);
 void display_set_digit(display_t * disp, uint8_t index, display_character_t value);
 void display_off(display_t * disp);
+void display_test_mode(uint8_t on);
+
 #endif /* DRIVERS_INC_MAX7219_H_ */

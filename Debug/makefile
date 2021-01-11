@@ -4,7 +4,7 @@
 
 SHELL = cmd.exe
 
-CG_TOOL_ROOT := C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS
+CG_TOOL_ROOT := C:/ti/ccsv8/tools/compiler/ti-cgt-msp430_18.1.6.LTS
 
 GEN_OPTS__FLAG := 
 GEN_CMDS__FLAG := 
@@ -15,6 +15,7 @@ ORDERED_OBJS += \
 "./drivers/src/cap_buttons.obj" \
 "./drivers/src/neopixel.obj" \
 "./utility/clock.obj" \
+"./utility/color.obj" \
 "./utility/delay.obj" \
 "../lnk_msp430g2433.cmd" \
 $(GEN_CMDS__FLAG) \
@@ -129,42 +130,42 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-airfryer-grill-prototype.out \
+afp.out \
 
 EXE_OUTPUTS__QUOTED += \
-"airfryer-grill-prototype.out" \
+"afp.out" \
 
 BIN_OUTPUTS += \
-airfryer-grill-prototype.hex \
+afp.txt \
 
 BIN_OUTPUTS__QUOTED += \
-"airfryer-grill-prototype.hex" \
+"afp.txt" \
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "airfryer-grill-prototype.out" secondary-outputs
+	@$(MAKE) --no-print-directory -Onone "afp.out" secondary-outputs
 
 # Tool invocations
-airfryer-grill-prototype.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+afp.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: MSP430 Linker'
-	"C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/bin/cl430" -vmsp -Ooff --opt_for_speed=1 --use_hw_mpy=none --advice:power="all" --define=__MSP430G2433__ -g --c99 --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number -z -m"airfryer-grill-prototype.map" --heap_size=80 --stack_size=80 -i"C:/ti/ccs1011/ccs/ccs_base/msp430/include" -i"C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/lib" -i"C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="airfryer-grill-prototype_linkInfo.xml" --use_hw_mpy=none --rom_model -o "airfryer-grill-prototype.out" $(ORDERED_OBJS)
+	"C:/ti/ccsv8/tools/compiler/ti-cgt-msp430_18.1.6.LTS/bin/cl430" -vmsp -O0 --opt_for_speed=0 --use_hw_mpy=none --advice:power="all" --define=__MSP430G2433__ -g --c99 --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number -z -m"afp.map" --heap_size=80 --stack_size=80 -i"C:/ti/ccsv8/ccs_base/msp430/include" -i"C:/ti/ccsv8/tools/compiler/ti-cgt-msp430_18.1.6.LTS/lib" -i"C:/ti/ccsv8/tools/compiler/ti-cgt-msp430_18.1.6.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="afp_linkInfo.xml" --use_hw_mpy=none --rom_model -o "afp.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
-airfryer-grill-prototype.hex: $(EXE_OUTPUTS)
+afp.txt: $(EXE_OUTPUTS)
 	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo 'Invoking: MSP430 Hex Utility'
-	"C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/bin/hex430" --memwidth=8 --romwidth=8 -o "airfryer-grill-prototype.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccsv8/tools/compiler/ti-cgt-msp430_18.1.6.LTS/bin/hex430" --memwidth=8 --romwidth=8 --ti_txt -o "afp.txt" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "drivers\src\MAX7219.obj" "drivers\src\cap_buttons.obj" "drivers\src\neopixel.obj" "utility\clock.obj" "utility\delay.obj" 
-	-$(RM) "main.d" "drivers\src\MAX7219.d" "drivers\src\cap_buttons.d" "drivers\src\neopixel.d" "utility\clock.d" "utility\delay.d" 
+	-$(RM) "main.obj" "drivers\src\MAX7219.obj" "drivers\src\cap_buttons.obj" "drivers\src\neopixel.obj" "utility\clock.obj" "utility\color.obj" "utility\delay.obj" 
+	-$(RM) "main.d" "drivers\src\MAX7219.d" "drivers\src\cap_buttons.d" "drivers\src\neopixel.d" "utility\clock.d" "utility\color.d" "utility\delay.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

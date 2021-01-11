@@ -30,13 +30,15 @@ void display_init()
 
     //set initial config
     g_display_config.decode_mode = NO_DECODE;
-    g_display_config.intensity = DUTY_MAX;
+    g_display_config.intensity = DUTY_4;
     g_display_config.scan_limit = SCAN_LIMIT_ALL;
-    g_display_config.shutdown = 0;
+    g_display_config.shutdown = 0x01;
 
     display_write_config(g_display_config);
+    display_test_mode(0);
 
 }
+
 
 void spi_Write_Reg(uint8_t addr, uint8_t data)
 {
@@ -78,5 +80,14 @@ void display_off(display_t * disp){
     }
 
     display_show_all_digits(disp);
+}
+
+void display_test_mode(uint8_t on){
+    if(on){
+        spi_Write_Reg(MAX_REG_DISPLAYTEST, 0x01);
+    }
+    else{
+        spi_Write_Reg(MAX_REG_DISPLAYTEST,0x00);
+    }
 }
 
