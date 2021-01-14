@@ -63,7 +63,7 @@ void display_write_config(display_config_t config){
     spi_Write_Reg(MAX_REG_SHUTDOWN, config.shutdown);
 }
 
-void display_show_all_digits(display_t * disp){
+void display_show(display_t * disp){
 
     for(uint8_t i = 0; i < DISPLAY_NUM_DIGITS; i++){
         spi_Write_Reg(MAX_REG_DIGIT0+i, disp->digit[i]);
@@ -74,12 +74,12 @@ void display_set_digit(display_t * disp, uint8_t index, display_character_t valu
     disp->digit[index] = value;
 }
 
-void display_off(display_t * disp){
+void display_clear(display_t * disp){
     for(uint8_t i = 0; i < DISPLAY_NUM_DIGITS; i++){
         disp->digit[i] = CHAR_NULL;
     }
 
-    display_show_all_digits(disp);
+    //display_show_all_digits(disp);
 }
 
 void display_test_mode(uint8_t on){
