@@ -10,20 +10,85 @@
 
 button_map_t buttons[BUTTON_NULL];
 
-void button_io_init(){
-    //for 4b concept
-
-    for(uint8_t j = 0; j < BUTTON_NULL; j++){
-        buttons[j].debounce = 0;
+void buttons_off_state(){
+    for(uint8_t i = 0; i < BUTTON_NULL; i++){
+        if(buttons[i].function == BUTTON_POWER){
+            buttons[i].state = BUTTON_STATE_ON;
+        }
+        else{
+            buttons[i].state = BUTTON_STATE_OFF;
+        }
+        buttons[i].debounce = 0;
     }
+    update_button_leds();
+}
 
-#if 1
+void buttons_idle_state(){
+    for(uint8_t i = 0; i < BUTTON_NULL; i++){
+        buttons[i].state = BUTTON_STATE_ON;
+    }
+    update_button_leds();
+}
+
+void buttons_running_state(button_function_t func, bool turn, bool smoke, uint8_t preheat){
+    for(uint8_t i = 0; i < BUTTON_NULL; i++){
+        if(buttons[i].function == func){
+                 buttons[i].state = BUTTON_STATE_PRESSED;
+        }
+        else if(func >= BUTTON_GRILL_LOW && buttons[i].function == BUTTON_GRILL){
+            buttons[i].state = BUTTON_STATE_PRESSED;
+        }
+        else if(buttons[i].function == BUTTON_TURN_REM && turn){
+            buttons[i].state = BUTTON_STATE_PRESSED;
+        }
+        else if(buttons[i].function == BUTTON_SMOKE_EXT && smoke){
+            buttons[i].state = BUTTON_STATE_PRESSED;
+        }
+        else if(buttons[i].function == BUTTON_PREHEAT && preheat != 0){
+            buttons[i].state = BUTTON_STATE_PRESSED;
+        }
+        else if(buttons[i].function == BUTTON_STOP_CANCEL){
+            buttons[i].state = BUTTON_STATE_ON;
+        }
+        else if(buttons[i].function == BUTTON_POWER){
+            buttons[i].state = BUTTON_STATE_ON;
+        }
+        else{
+            buttons[i].state = BUTTON_STATE_OFF;
+        }
+    }
+    update_button_leds();
+}
+
+void buttons_selection_state(button_function_t func, bool turn, bool smoke, uint8_t preheat){
+    for(uint8_t i = 0; i < BUTTON_NULL; i++){
+        if(buttons[i].function == func){
+                 buttons[i].state = BUTTON_STATE_PRESSED;
+        }
+        else if(buttons[i].function == BUTTON_TURN_REM && turn){
+            buttons[i].state = BUTTON_STATE_PRESSED;
+        }
+        else if(buttons[i].function == BUTTON_SMOKE_EXT && smoke){
+            buttons[i].state = BUTTON_STATE_PRESSED;
+        }
+        else if(buttons[i].function == BUTTON_PREHEAT && preheat != 0){
+            buttons[i].state = BUTTON_STATE_PRESSED;
+        }
+        else{
+            buttons[i].state = BUTTON_STATE_ON;
+        }
+    }
+    update_button_leds();
+}
+
+void button_io_init(){
+
+#if 1 //for 4b concept
     uint8_t i = 0;
     //AIRFRY
     buttons[i].port = 2;
     buttons[i].pin = BIT0;
     buttons[i].function = BUTTON_AIRFRY;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 32;
     buttons[i].assc_leds[1] = 31;
     buttons[i].type = TYPE_WHITE_BLUE;
@@ -33,7 +98,6 @@ void button_io_init(){
     buttons[i].port = 2;
     buttons[i].pin = BIT1;
     buttons[i].function = BUTTON_BAKE;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 30;
     buttons[i].assc_leds[1] = 29;
     buttons[i].type = TYPE_WHITE_BLUE;
@@ -42,7 +106,6 @@ void button_io_init(){
     buttons[i].port = 2;
     buttons[i].pin = BIT2;
     buttons[i].function = BUTTON_ROAST;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 28;
     buttons[i].assc_leds[1] = 27;
     buttons[i].type = TYPE_WHITE_BLUE;
@@ -51,7 +114,6 @@ void button_io_init(){
     buttons[i].port = 2;
     buttons[i].pin = BIT4;
     buttons[i].function = BUTTON_DEHYDRATE;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 26;
     buttons[i].assc_leds[1] = 25;
     buttons[i].type = TYPE_WHITE_BLUE;
@@ -60,7 +122,6 @@ void button_io_init(){
     buttons[i].port = 2;
     buttons[i].pin = BIT3;
     buttons[i].function = BUTTON_PREHEAT;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 24;
     buttons[i].assc_leds[1] = 23;
     buttons[i].type = TYPE_WHITE_BLUE;
@@ -69,7 +130,6 @@ void button_io_init(){
     buttons[i].port = 2;
     buttons[i].pin = BIT5;
     buttons[i].function = BUTTON_TIME_UP;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 22;
     buttons[i].assc_leds[1] = 0xff;
     buttons[i].type = TYPE_WHITE;
@@ -78,7 +138,6 @@ void button_io_init(){
     buttons[i].port = 2;
     buttons[i].pin = BIT6;
     buttons[i].function = BUTTON_TIME_DOWN;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 21;
     buttons[i].assc_leds[1] = 0xff;
     buttons[i].type = TYPE_WHITE;
@@ -87,7 +146,6 @@ void button_io_init(){
     buttons[i].port = 2;
     buttons[i].pin = BIT7;
     buttons[i].function = BUTTON_STOP_CANCEL;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 20;
     buttons[i].assc_leds[1] = 19;
     buttons[i].type = TYPE_WHITE;
@@ -96,7 +154,6 @@ void button_io_init(){
     buttons[i].port = 3;
     buttons[i].pin = BIT0;
     buttons[i].function = BUTTON_POWER;
-    buttons[i].state = BUTTON_STATE_ON;
     buttons[i].assc_leds[0] = 18;
     buttons[i].assc_leds[1] = 0xff;
     buttons[i].type = TYPE_WHITE;
@@ -105,7 +162,6 @@ void button_io_init(){
     buttons[i].port = 3;
     buttons[i].pin = BIT1;
     buttons[i].function = BUTTON_START;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 17;
     buttons[i].assc_leds[1] = 16;
     buttons[i].type = TYPE_WHITE;
@@ -114,7 +170,6 @@ void button_io_init(){
     buttons[i].port = 3;
     buttons[i].pin = BIT2;
     buttons[i].function = BUTTON_TURN_REM;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 15;
     buttons[i].assc_leds[1] = 14;
     buttons[i].type = TYPE_WHITE_BLUE;
@@ -123,7 +178,6 @@ void button_io_init(){
     buttons[i].port = 3;
     buttons[i].pin = BIT3;
     buttons[i].function = BUTTON_TEMP_DOWN;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 13;
     buttons[i].assc_leds[1] = 0xff;
     buttons[i].type = TYPE_WHITE;
@@ -132,7 +186,6 @@ void button_io_init(){
     buttons[i].port = 3;
     buttons[i].pin = BIT4;
     buttons[i].function = BUTTON_TEMP_UP;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 12;
     buttons[i].assc_leds[1] = 0xff;
     buttons[i].type = TYPE_WHITE;
@@ -141,16 +194,14 @@ void button_io_init(){
     buttons[i].port = 3;
     buttons[i].pin = BIT5;
     buttons[i].function = BUTTON_GRILL;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 11;
     buttons[i].assc_leds[1] = 10;
-    buttons[i].type = TYPE_WHITE_RED;
+    buttons[i].type = TYPE_WHITE_BLUE;
     i++;
 
     buttons[i].port = 3;
     buttons[i].pin = BIT6;
     buttons[i].function = BUTTON_SMOKE_EXT;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 1;
     buttons[i].assc_leds[1] = 0;
     buttons[i].type = TYPE_WHITE_BLUE;
@@ -160,7 +211,6 @@ void button_io_init(){
     buttons[i].port = 0;
     buttons[i].pin = BIT0;
     buttons[i].function = BUTTON_TIME_TEMP_TOGGLE;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 0xff;
     buttons[i].assc_leds[1] = 0xff;
     buttons[i].type = TYPE_WHITE;
@@ -169,7 +219,6 @@ void button_io_init(){
     buttons[i].port = 0;
     buttons[i].pin = BIT6;
     buttons[i].function = BUTTON_GRILL_LOW;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 9;
     buttons[i].assc_leds[1] = 8;
     buttons[i].type = TYPE_WHITE_RED;
@@ -178,7 +227,6 @@ void button_io_init(){
     buttons[i].port = 0;
     buttons[i].pin = BIT6;
     buttons[i].function = BUTTON_GRILL_MED;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 7;
     buttons[i].assc_leds[1] = 6;
     buttons[i].type = TYPE_WHITE_RED;
@@ -187,7 +235,6 @@ void button_io_init(){
     buttons[i].port = 0;
     buttons[i].pin = BIT6;
     buttons[i].function = BUTTON_GRILL_HIGH;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 5;
     buttons[i].assc_leds[1] = 4;
     buttons[i].type = TYPE_WHITE_RED;
@@ -196,7 +243,6 @@ void button_io_init(){
     buttons[i].port = 0;
     buttons[i].pin = BIT6;
     buttons[i].function = BUTTON_GRILL_MAX;
-    buttons[i].state = BUTTON_STATE_OFF;
     buttons[i].assc_leds[0] = 3;
     buttons[i].assc_leds[1] = 2;
     buttons[i].type = TYPE_WHITE_RED;
@@ -215,6 +261,9 @@ void button_io_init(){
     P3DIR = BIT7;
     P3REN = 0xff;
     P3OUT = 0xff;
+
+    buttons_off_state();
+    update_button_leds();
 }
 
 button_state_t get_button_state(button_function_t button){
@@ -232,6 +281,7 @@ void change_button_state(button_function_t button, button_state_t new_state){
             buttons[i].state = new_state;
         }
     }
+    update_button_leds();
 }
 
 void update_button_leds(){
@@ -247,12 +297,12 @@ void update_button_leds(){
             break;
         case BUTTON_STATE_PRESSED:
             if(buttons[i].type == TYPE_WHITE_BLUE){
-                neopixel_SetColor(buttons[i].assc_leds[0], COLOR_RGB(0,0,75));
-                neopixel_SetColor(buttons[i].assc_leds[1], COLOR_RGB(0,0,75));
+                neopixel_SetColor(buttons[i].assc_leds[0], COLOR_RGB(0,0,255));
+                neopixel_SetColor(buttons[i].assc_leds[1], COLOR_RGB(0,0,255));
             }
             else {//if(buttons[i].type == TYPE_WHITE_RED){
-                neopixel_SetColor(buttons[i].assc_leds[0], COLOR_RGB(0,75,0));
-                neopixel_SetColor(buttons[i].assc_leds[1], COLOR_RGB(0,75,0));
+                neopixel_SetColor(buttons[i].assc_leds[0], COLOR_RGB(0,255,0));
+                neopixel_SetColor(buttons[i].assc_leds[1], COLOR_RGB(0,255,0));
             }
             break;
         }
@@ -271,6 +321,15 @@ void button_decrement_debounce(){
     }
 }
 
+button_function_t button_check_for_holding(button_function_t function){
+    for(uint8_t i = 0; i <  BUTTON_NULL; i++){
+        if(buttons[i].function == function){
+            update_press_from_interrupt(buttons[i].port, buttons[i].pin);
+            return buttons_check();
+        }
+    }
+}
+
 void update_press_from_interrupt(uint8_t port, uint8_t int_mask){
     for(uint8_t i = 0; i < BUTTON_NULL; i++){
         if(buttons[i].port == port){
@@ -281,11 +340,11 @@ void update_press_from_interrupt(uint8_t port, uint8_t int_mask){
                         while(!(P2IN & buttons[i].pin)){
                             buttons[i].debounce++;
                             delay_ms(1);
-                            if(buttons[i].debounce > 5){
+                            if(buttons[i].debounce > 10){
                                 break;
                             }
                         }
-                        if(buttons[i].debounce > 5){
+                        if(buttons[i].debounce > 10){
                             buttons[i].debounce = 0;
                             buttons_new_press = i;
                         }
@@ -294,11 +353,11 @@ void update_press_from_interrupt(uint8_t port, uint8_t int_mask){
                         while(!(P3IN & buttons[i].pin)){
                             buttons[i].debounce++;
                             delay_ms(1);
-                            if(buttons[i].debounce > 5){
+                            if(buttons[i].debounce > 10){
                                 break;
                             }
                         }
-                        if(buttons[i].debounce > 5){
+                        if(buttons[i].debounce > 10){
                             buttons[i].debounce = 0;
                             buttons_new_press = i;
                         }

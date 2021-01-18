@@ -30,7 +30,7 @@ void display_init()
 
     //set initial config
     g_display_config.decode_mode = NO_DECODE;
-    g_display_config.intensity = DUTY_4;
+    g_display_config.intensity = DUTY_8;
     g_display_config.scan_limit = SCAN_LIMIT_ALL;
     g_display_config.shutdown = 0x01;
 

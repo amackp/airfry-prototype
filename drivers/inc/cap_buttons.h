@@ -13,6 +13,8 @@
 
 #define NUMBER_BUTTONS 15
 
+#define BUTTON_PRESS_DELAY 800  //ms
+
 typedef enum{
     //modes
     BUTTON_AIRFRY = 0x00,
@@ -21,6 +23,7 @@ typedef enum{
     BUTTON_DEHYDRATE,
     BUTTON_PREHEAT,
     BUTTON_GRILL,
+    BUTTON_POWER,
 
     //toggles
     BUTTON_SMOKE_EXT,
@@ -35,7 +38,7 @@ typedef enum{
 
     //power
     BUTTON_STOP_CANCEL,
-    BUTTON_POWER,
+
     BUTTON_START,
 
     //nonpressable buttons
@@ -61,17 +64,16 @@ typedef enum{
 }button_type_t;
 
 typedef struct{
-    button_function_t function;
+    uint8_t function;
     uint8_t port;
     uint8_t pin;
-    button_type_t type;
-    button_state_t state;
+    uint8_t type;
+    uint8_t state;
     uint8_t assc_leds[2];   //indexes of leds accociated with button
-    uint16_t debounce;
-
+    uint8_t debounce;
 }button_map_t;
 
-
+void buttons_idle_state();
 void button_io_init();
 button_function_t button_check();
 void change_button_state(button_function_t, button_state_t);

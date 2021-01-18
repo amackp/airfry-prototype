@@ -65,7 +65,7 @@ uint16_t rtc_miliseconds = 0;
 inline void rtc_tick(){
     //check if the processor is running at 16MHz
 
-    rtc_miliseconds+= 31;  //500/16.
+    rtc_miliseconds+= 27;  //500/16.
 
     if (rtc_miliseconds >=1000){
         rtc_miliseconds = (rtc_miliseconds % 1000);
